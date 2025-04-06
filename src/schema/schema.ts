@@ -23,16 +23,16 @@ const artistSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      length: 500,
+      length: 5000,
       validate: {
         validator: (v: string) => {
-          return v.length <= 500;
+          return v.length <= 5000;
         },
       },
     },
     username: { type: String, required: true },
-    image: { type: String, required: true },
-    instaLink: { type: String, required: true },
+    image: { type: String },
+    instaLink: { type: String },
     websiteUrl: { type: String },
     category: { type: Schema.Types.ObjectId, ref: "Categories" },
   },
@@ -44,7 +44,7 @@ const artWorkSchema = new mongoose.Schema(
     id: { type: String, required: true, default: () => randomUUID() },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    imageUrl: { type: String, required: true },
+    imageUrl: [{ type: String, required: true }],
     artistId: { type: Schema.Types.ObjectId, ref: "Artist" },
     likes: { type: Number, default: 0 },
     comments: [

@@ -11,6 +11,7 @@ const MemoryStore = require("memorystore")(session);
 import passport from "./src/authentication/strategy/localStrategy";
 import { categoriesRoute } from "./src/routes/categories.route";
 import { artistRoute } from "./src/routes/artist.route";
+import { artModelRoute } from "./src/routes/artmodel.route";
 
 const app: Express = express();
 mongo;
@@ -45,6 +46,7 @@ app.use(passport.session()); // for session management
 app.use("/api/auth", authRoute);
 app.use("/api/categories", categoriesRoute); // for authentication routes
 app.use("/api/artists", artistRoute);
+app.use("/api/artworks", artModelRoute); // for authentication routes
 
 app.listen(configs.port, () => {
   console.log(`Server is running on port ${configs.port}`);

@@ -5,6 +5,7 @@ import { checkPermission } from "../controllers/auth.controller";
 
 export const categoriesRoute: Router = Router();
 
+// Create a new category
 categoriesRoute.post(
   "/create",
   // checkPermission,
@@ -35,6 +36,7 @@ categoriesRoute.post(
   }
 );
 
+// Fetch all categories
 categoriesRoute.get("/all", async (req: Request, res: Response) => {
   try {
     const response = await CategoriesModel.find();
@@ -53,6 +55,7 @@ categoriesRoute.get("/all", async (req: Request, res: Response) => {
   }
 });
 
+// Fetch category by ID
 categoriesRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -65,6 +68,49 @@ categoriesRoute.get("/:id", async (req: Request, res: Response) => {
     if (err instanceof Error) {
       res.status(400).json({
         message: "Error fetching category",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// Update category by ID
+categoriesRoute.put("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  try {
+    const response = await CategoriesModel.findByIdAndUpdate(
+      id,
+      { name, description },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Category updated successfully",
+      data: response,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error updating category",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// Delete category by ID
+categoriesRoute.delete("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const response = await CategoriesModel.findByIdAndDelete(id);
+    res.status(200).json({
+      message: "Category deleted successfully",
+      data: response,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error deleting category",
         error: err.message,
       });
     }

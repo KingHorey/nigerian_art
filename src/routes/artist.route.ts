@@ -4,6 +4,7 @@ import { ArtistModel } from "../schema/schema";
 
 export const artistRoute: Router = Router();
 
+// Create a new artist
 artistRoute.post("/create", async (req: Request, res: Response) => {
   const {
     name,
@@ -39,6 +40,7 @@ artistRoute.post("/create", async (req: Request, res: Response) => {
   }
 });
 
+// Fetch all artists
 artistRoute.get("/all", async (req: Request, res: Response) => {
   try {
     const response = await ArtistModel.find();
@@ -56,6 +58,7 @@ artistRoute.get("/all", async (req: Request, res: Response) => {
   }
 });
 
+// Fetch artist by ID
 artistRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -80,6 +83,7 @@ artistRoute.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Fetch artworks by artist ID
 artistRoute.put("/update/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const {
@@ -125,6 +129,7 @@ artistRoute.put("/update/:id", async (req: Request, res: Response) => {
   }
 });
 
+// delete an artist
 artistRoute.delete("/delete/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -144,6 +149,65 @@ artistRoute.delete("/delete/:id", async (req: Request, res: Response) => {
     if (err instanceof Error) {
       res.status(400).json({
         message: "Error deleting artist",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// like an artwork
+artistRoute.put("/like/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const artist = await ArtistModel.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    if (artist) {
+      res.status(200).json({
+        message: "Artist liked successfully",
+        data: artist,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artist not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error liking artist",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// comment on an artwork
+artistRoute.put("/comment/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+  try {
+    const artist = await ArtistModel.findByIdAndUpdate(
+      id,
+      { $push: { comments: comment } },
+      { new: true }
+    );
+    if (artist) {
+      res.status(200).json({
+        message: "Comment added successfully",
+        data: artist,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artist not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error adding comment",
         error: err.message,
       });
     }
