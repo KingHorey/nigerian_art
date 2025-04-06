@@ -1,0 +1,151 @@
+import { Response, Request, Router } from "express";
+
+import { ArtistModel } from "../schema/schema";
+
+export const artistRoute: Router = Router();
+
+artistRoute.post("/create", async (req: Request, res: Response) => {
+  const {
+    name,
+    description,
+    username,
+    image,
+    instaLink,
+    websiteUrl,
+    category,
+  } = req.body;
+  try {
+    const artist = new ArtistModel({
+      name,
+      description,
+      username,
+      image,
+      instaLink,
+      websiteUrl,
+      category,
+    });
+    await artist.save();
+    res.status(201).json({
+      message: "Artist created successfully",
+      data: artist,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error creating artist",
+        error: err.message,
+      });
+    }
+  }
+});
+
+artistRoute.get("/all", async (req: Request, res: Response) => {
+  try {
+    const response = await ArtistModel.find();
+    res.status(200).json({
+      message: "Artists fetched successfully",
+      data: response,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error fetching artists",
+        error: err.message,
+      });
+    }
+  }
+});
+
+artistRoute.get("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const artist = await ArtistModel.findById(id).populate("artworks");
+    if (artist) {
+      res.status(200).json({
+        message: "Artist fetched successfully",
+        data: artist,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artist not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error fetching artist",
+        error: err.message,
+      });
+    }
+  }
+});
+
+artistRoute.put("/update/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    name,
+    description,
+    username,
+    image,
+    instaLink,
+    websiteUrl,
+    category,
+  } = req.body;
+  try {
+    const artist = await ArtistModel.findByIdAndUpdate(
+      id,
+      {
+        name,
+        description,
+        username,
+        image,
+        instaLink,
+        websiteUrl,
+        category,
+      },
+      { new: true }
+    );
+    if (artist) {
+      res.status(200).json({
+        message: "Artist updated successfully",
+        data: artist,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artist not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error updating artist",
+        error: err.message,
+      });
+    }
+  }
+});
+
+artistRoute.delete("/delete/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const artist = await ArtistModel.findByIdAndDelete(id);
+
+    if (artist) {
+      res.status(200).json({
+        message: "Artist deleted successfully",
+        data: artist,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artist not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error deleting artist",
+        error: err.message,
+      });
+    }
+  }
+});
