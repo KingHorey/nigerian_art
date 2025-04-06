@@ -1,16 +1,16 @@
 import express, { Request, Response, Express } from "express";
 import cors from "cors";
 import cookie from "cookie-parser";
-import { configs } from "./config";
-import { mongo } from "./connections/mongoConnection";
-import { authRoute } from "./routes/auth.routes";
+import { configs } from "./src/config";
+import { mongo } from "./src/connections/mongoConnection";
+import { authRoute } from "./src/routes/auth.routes";
 // @ts-ignore
 import session from "express-session";
 const MemoryStore = require("memorystore")(session);
 
-import passport from "./authentication/strategy/localStrategy";
-import { categoriesRoute } from "./routes/categories.route";
-import { artistRoute } from "./routes/artist.route";
+import passport from "./src/authentication/strategy/localStrategy";
+import { categoriesRoute } from "./src/routes/categories.route";
+import { artistRoute } from "./src/routes/artist.route";
 
 const app: Express = express();
 mongo;
