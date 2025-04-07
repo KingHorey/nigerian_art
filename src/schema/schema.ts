@@ -47,6 +47,7 @@ const artWorkSchema = new mongoose.Schema(
     imageUrl: [{ type: String, required: true }],
     artistId: { type: Schema.Types.ObjectId, ref: "Artist" },
     likes: { type: Number, default: 0 },
+    featured: {type: Boolean, default: false},
     comments: [
       {
         name: { type: String, required: true },

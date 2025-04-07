@@ -48,6 +48,24 @@ artModelRoute.get("/all", async (req: Request, res: Response) => {
   }
 });
 
+// fetch featured artworks
+artModelRoute.get("/featured", async (req: Request, res: Response) => {
+  try {
+    const response = await ArtWorkModel.find({featured : true}).populate("artistId");
+    res.status(200).json({
+      message: "Featured artworks fetched successfully",
+      data: response,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error fetching artworks",
+        error: err.message,
+      });
+    }
+  }
+})
+
 // Fetch artwork by ID
 artModelRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -143,6 +161,72 @@ artModelRoute.put("/update/:id", async (req: Request, res: Response) => {
     if (err instanceof Error) {
       res.status(400).json({
         message: "Error updating artwork",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// like an artwork
+artModelRoute.put("/like/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const artwork = await ArtWorkModel.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    if (artwork) {
+      res.status(200).json({
+        message: "Artwork liked successfully",
+        data: artwork,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artwork not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error liking artwork",
+        error: err.message,
+      });
+    }
+  }
+});
+
+// comment on an artwork
+artModelRoute.post("/comment/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, comment } = req.body;
+  try {
+    const artwork = await ArtWorkModel.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          comments: {
+            name,
+            comment,
+          },
+        },
+      },
+      { new: true }
+    );
+    if (artwork) {
+      res.status(200).json({
+        message: "Comment added successfully",
+        data: artwork,
+      });
+    } else {
+      res.status(404).json({
+        message: "Artwork not found",
+      });
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: "Error adding comment",
         error: err.message,
       });
     }

@@ -155,7 +155,7 @@ artistRoute.delete("/delete/:id", async (req: Request, res: Response) => {
   }
 });
 
-// like an artwork
+// like an artist
 artistRoute.put("/like/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -178,36 +178,6 @@ artistRoute.put("/like/:id", async (req: Request, res: Response) => {
     if (err instanceof Error) {
       res.status(400).json({
         message: "Error liking artist",
-        error: err.message,
-      });
-    }
-  }
-});
-
-// comment on an artwork
-artistRoute.put("/comment/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { comment } = req.body;
-  try {
-    const artist = await ArtistModel.findByIdAndUpdate(
-      id,
-      { $push: { comments: comment } },
-      { new: true }
-    );
-    if (artist) {
-      res.status(200).json({
-        message: "Comment added successfully",
-        data: artist,
-      });
-    } else {
-      res.status(404).json({
-        message: "Artist not found",
-      });
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      res.status(400).json({
-        message: "Error adding comment",
         error: err.message,
       });
     }
