@@ -21,10 +21,7 @@ categoriesRoute.post(
       // }
       const categories = new CategoriesModel({ name, description });
       await categories.save();
-      res.status(201).json({
-        message: "Category created successfully",
-        data: categories,
-      });
+      res.status(201).json(categories);
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
@@ -41,10 +38,7 @@ categoriesRoute.get("/all", async (req: Request, res: Response) => {
   try {
     const response = await CategoriesModel.find();
 
-    res.status(200).json({
-      message: "Categories fetched successfully",
-      data: response,
-    });
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -60,10 +54,7 @@ categoriesRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const response = await CategoriesModel.findById(id).populate("artworks");
-    res.status(200).json({
-      message: "Category fetched successfully",
-      data: response,
-    });
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -84,10 +75,7 @@ categoriesRoute.put("/:id", async (req: Request, res: Response) => {
       { name, description },
       { new: true }
     );
-    res.status(200).json({
-      message: "Category updated successfully",
-      data: response,
-    });
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -103,10 +91,7 @@ categoriesRoute.delete("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const response = await CategoriesModel.findByIdAndDelete(id);
-    res.status(200).json({
-      message: "Category deleted successfully",
-      data: response,
-    });
+    res.status(204);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({

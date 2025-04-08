@@ -16,10 +16,7 @@ artModelRoute.post("/create", async (req: Request, res: Response) => {
       imageUrl: image,
     });
     await artwork.save();
-    res.status(201).json({
-      message: "Artwork created successfully",
-      data: artwork,
-    });
+    res.status(201).json(artwork);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -33,11 +30,10 @@ artModelRoute.post("/create", async (req: Request, res: Response) => {
 // Fetch all artworks
 artModelRoute.get("/all", async (req: Request, res: Response) => {
   try {
-    const response = await ArtWorkModel.find().populate("artistId");
-    res.status(200).json({
-      message: "Artworks fetched successfully",
-      data: response,
-    });
+    const response = await ArtWorkModel.find()
+      .populate("artistId")
+      .populate("category");
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -51,11 +47,10 @@ artModelRoute.get("/all", async (req: Request, res: Response) => {
 // fetch featured artworks
 artModelRoute.get("/featured", async (req: Request, res: Response) => {
   try {
-    const response = await ArtWorkModel.find({featured : true}).populate("artistId");
-    res.status(200).json({
-      message: "Featured artworks fetched successfully",
-      data: response,
-    });
+    const response = await ArtWorkModel.find({ featured: true }).populate(
+      "artistId"
+    ).populate("category");
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -64,17 +59,14 @@ artModelRoute.get("/featured", async (req: Request, res: Response) => {
       });
     }
   }
-})
+});
 
 // Fetch artwork by ID
 artModelRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const artwork = await ArtWorkModel.findById(id).populate("artistId");
-    res.status(200).json({
-      message: "Artwork fetched successfully",
-      data: artwork,
-    });
+    const artwork = await ArtWorkModel.findById(id).populate("artistId").populate("category");
+    res.status(200).json(artwork);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -91,11 +83,8 @@ artModelRoute.get("/artist/:id", async (req: Request, res: Response) => {
   try {
     const artworks = await ArtWorkModel.find({ artistId: id }).populate(
       "artistId"
-    );
-    res.status(200).json({
-      message: "Artworks fetched successfully",
-      data: artworks,
-    });
+    ).populate("category");
+    res.status(200).json(artworks);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -112,10 +101,7 @@ artModelRoute.delete("/delete/:id", async (req: Request, res: Response) => {
   try {
     const artwork = await ArtWorkModel.findByIdAndDelete(id);
     if (artwork) {
-      res.status(200).json({
-        message: "Artwork deleted successfully",
-        data: artwork,
-      });
+      res.status(204);
     } else {
       res.status(404).json({
         message: "Artwork not found",
@@ -148,10 +134,7 @@ artModelRoute.put("/update/:id", async (req: Request, res: Response) => {
       { new: true }
     );
     if (artwork) {
-      res.status(200).json({
-        message: "Artwork updated successfully",
-        data: artwork,
-      });
+      res.status(200).json(artwork);
     } else {
       res.status(404).json({
         message: "Artwork not found",
@@ -177,10 +160,7 @@ artModelRoute.put("/like/:id", async (req: Request, res: Response) => {
       { new: true }
     );
     if (artwork) {
-      res.status(200).json({
-        message: "Artwork liked successfully",
-        data: artwork,
-      });
+      res.status(200).json(artwork);
     } else {
       res.status(404).json({
         message: "Artwork not found",
@@ -214,10 +194,7 @@ artModelRoute.post("/comment/:id", async (req: Request, res: Response) => {
       { new: true }
     );
     if (artwork) {
-      res.status(200).json({
-        message: "Comment added successfully",
-        data: artwork,
-      });
+      res.status(200).json(artwork);
     } else {
       res.status(404).json({
         message: "Artwork not found",

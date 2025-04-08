@@ -26,10 +26,7 @@ artistRoute.post("/create", async (req: Request, res: Response) => {
       category,
     });
     await artist.save();
-    res.status(201).json({
-      message: "Artist created successfully",
-      data: artist,
-    });
+    res.status(201).json(artist);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -44,10 +41,7 @@ artistRoute.post("/create", async (req: Request, res: Response) => {
 artistRoute.get("/all", async (req: Request, res: Response) => {
   try {
     const response = await ArtistModel.find();
-    res.status(200).json({
-      message: "Artists fetched successfully",
-      data: response,
-    });
+    res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
       res.status(400).json({
@@ -64,10 +58,7 @@ artistRoute.get("/:id", async (req: Request, res: Response) => {
   try {
     const artist = await ArtistModel.findById(id).populate("artworks");
     if (artist) {
-      res.status(200).json({
-        message: "Artist fetched successfully",
-        data: artist,
-      });
+      res.status(200).json(artist);
     } else {
       res.status(404).json({
         message: "Artist not found",
@@ -110,10 +101,7 @@ artistRoute.put("/update/:id", async (req: Request, res: Response) => {
       { new: true }
     );
     if (artist) {
-      res.status(200).json({
-        message: "Artist updated successfully",
-        data: artist,
-      });
+      res.status(200).json(artist);
     } else {
       res.status(404).json({
         message: "Artist not found",
@@ -136,10 +124,7 @@ artistRoute.delete("/delete/:id", async (req: Request, res: Response) => {
     const artist = await ArtistModel.findByIdAndDelete(id);
 
     if (artist) {
-      res.status(200).json({
-        message: "Artist deleted successfully",
-        data: artist,
-      });
+      res.status(204);
     } else {
       res.status(404).json({
         message: "Artist not found",
@@ -165,10 +150,7 @@ artistRoute.put("/like/:id", async (req: Request, res: Response) => {
       { new: true }
     );
     if (artist) {
-      res.status(200).json({
-        message: "Artist liked successfully",
-        data: artist,
-      });
+      res.status(200).json(artist);
     } else {
       res.status(404).json({
         message: "Artist not found",
