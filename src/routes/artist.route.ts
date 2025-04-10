@@ -165,3 +165,24 @@ artistRoute.put("/like/:id", async (req: Request, res: Response) => {
     }
   }
 });
+
+
+// search for an artist
+artistRoute.get("/search", async(req: Request, res: Response) => {
+  const { name } = req.query;
+  try {
+    const artist = await ArtistModel.find({name: {$regex: name, $options: "i"}}).populate("artworks")
+    if (artist.length > 0) {
+      res.status(200).json(artist)
+    } else {
+      res.status(404).json([])
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({
+        message: 'Bad request',
+        error: err.message
+      })
+    }
+  }
+})
