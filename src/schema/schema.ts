@@ -80,7 +80,7 @@ categoriesSchema.set("toObject", { virtuals: true });
 
 artistSchema.virtual("artworks", {
   ref: "ArtWork", // The model to populate
-  localField: "id", // The field in the Artist model that holds the artist's ID
+  localField: "_id", // The field in the Artist model that holds the artist's ID
   foreignField: "artistId", // The field in the ArtWork model that holds the artist's ID
 });
 
