@@ -7,8 +7,6 @@ export const artModelRoute: Router = Router();
 // Create a new artwork
 artModelRoute.post("/create", async (req: Request, res: Response) => {
   const { title, description, imageUrl, artist, category } = req.body;
-
-  console.log(req.body);
   try {
     const artwork = new ArtWorkModel({
       title,
