@@ -6,14 +6,16 @@ export const artModelRoute: Router = Router();
 
 // Create a new artwork
 artModelRoute.post("/create", async (req: Request, res: Response) => {
-  const { title, description, image, artist, category } = req.body;
+  const { title, description, imageUrl, artist, category } = req.body;
+
+  console.log(req.body);
   try {
     const artwork = new ArtWorkModel({
       title,
       description,
       artistId: artist,
       category,
-      imageUrl: image,
+      imageUrl,
     });
     await artwork.save();
     res.status(201).json(artwork);
@@ -47,9 +49,9 @@ artModelRoute.get("/all", async (req: Request, res: Response) => {
 // fetch featured artworks
 artModelRoute.get("/featured", async (req: Request, res: Response) => {
   try {
-    const response = await ArtWorkModel.find({ featured: true }).populate(
-      "artistId"
-    ).populate("category");
+    const response = await ArtWorkModel.find({ featured: true })
+      .populate("artistId")
+      .populate("category");
     res.status(200).json(response);
   } catch (err) {
     if (err instanceof Error) {
@@ -65,7 +67,9 @@ artModelRoute.get("/featured", async (req: Request, res: Response) => {
 artModelRoute.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const artwork = await ArtWorkModel.findById(id).populate("artistId").populate("category");
+    const artwork = await ArtWorkModel.findById(id)
+      .populate("artistId")
+      .populate("category");
     res.status(200).json(artwork);
   } catch (err) {
     if (err instanceof Error) {
@@ -81,9 +85,9 @@ artModelRoute.get("/:id", async (req: Request, res: Response) => {
 artModelRoute.get("/artist/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const artworks = await ArtWorkModel.find({ artistId: id }).populate(
-      "artistId"
-    ).populate("category");
+    const artworks = await ArtWorkModel.find({ artistId: id })
+      .populate("artistId")
+      .populate("category");
     res.status(200).json(artworks);
   } catch (err) {
     if (err instanceof Error) {
@@ -131,7 +135,7 @@ artModelRoute.put("/update/:id", async (req: Request, res: Response) => {
         artistId: artist,
         category,
       },
-      { new: true }
+      { new: true },
     );
     if (artwork) {
       res.status(200).json(artwork);
@@ -157,7 +161,7 @@ artModelRoute.put("/like/:id", async (req: Request, res: Response) => {
     const artwork = await ArtWorkModel.findByIdAndUpdate(
       id,
       { $inc: { likes: 1 } },
-      { new: true }
+      { new: true },
     );
     if (artwork) {
       res.status(200).json(artwork);
@@ -191,7 +195,7 @@ artModelRoute.post("/comment/:id", async (req: Request, res: Response) => {
           },
         },
       },
-      { new: true }
+      { new: true },
     );
     if (artwork) {
       res.status(200).json(artwork);
